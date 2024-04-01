@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "chansmovies",
+    "slug": "chansmovies",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "chansmovies"
+}
