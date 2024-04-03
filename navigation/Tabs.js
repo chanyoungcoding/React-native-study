@@ -32,7 +32,12 @@ const Tabs = () => {
   }
 
   return (
-    <Tab.Navigator initialRouteName='Movies' screenOptions={allNavOptions}
+    <Tab.Navigator 
+      initialRouteName='Movies' 
+      screenOptions={allNavOptions}
+      sceneContainerStyle={{
+        backgroundColor: isDark ? BLACK_COLOR : "white"
+      }}
     >
       <Tab.Screen 
         name='Movies' 
