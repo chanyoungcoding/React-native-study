@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useColorScheme } from 'react-native';
 
 import { BLACK_COLOR, YELLOW_COLOR } from '../colors';
-import Movie from '../screens/Movie';
+import Movies from '../screens/Movies';
 import Tv from '../screens/Tv';
 import Search from '../screens/Search';
 
@@ -41,7 +41,7 @@ const Tabs = () => {
     >
       <Tab.Screen 
         name='Movies' 
-        component={Movie}
+        component={Movies}
         options={{
           tabBarIcon: ({focused, color, size}) => {
             return <Ionicons name={focused ? "film" : "film-outline"} color={color} size={size}/>
