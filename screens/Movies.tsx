@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Dimensions, ScrollView } from 'react-native';
+import { ActivityIndicator, Dimensions, FlatList, RefreshControl, View } from 'react-native';
 import Swiper from 'react-native-swiper';
 import styled from 'styled-components/native';
 import Slide from '../components/Slide';
-import Poster from '../components/Poster';
+import VMedia from '../components/VMedia';
+import HMedia from '../components/HMedia';
 
 const {height: SCREEN_HEIGHT} = Dimensions.get("window");
 
 const Movies = () => {
+  const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [nowPlaying, setNowPlaying] = useState([]);
   const [upcoming, setUpcoming] = useState([]);
@@ -52,12 +54,47 @@ const Movies = () => {
     getData();
   }, [])
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await getData();
+    setRefreshing(false);
+  }
+
+  const renderVMedia = ({item}) => (
+    <VMedia
+      posterPath={item.poster_path}
+      originalTitle={item.original_title}
+      voteAverage={item.vote_average}
+    />
+  )
+
+  const renderHMedia = ({item}) => (
+    <HMedia
+      key={item.id}
+      posterPath={item.poster_path}
+      originalTitle={item.original_title}
+      overview={item.overview}
+      releaseDate={item.release_date}
+    />
+  )
+
+  const movieKeyExtractor = item => item.id
+
+  //refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
   return loading ? (
     <Loader>
       <ActivityIndicator/>
     </Loader>
   ) : (
-    <Container>
+    <Container
+      refreshing={refreshing} 
+      onRefresh={onRefresh}
+      data={upcoming}
+      keyExtractor={movieKeyExtractor}
+      ItemSeparatorComponent={HSeparator}
+      renderItem={renderHMedia}
+      ListHeaderComponent={
+      <>
       <Swiper
         horizontal
         loop
@@ -79,65 +116,60 @@ const Movies = () => {
           />
         ))}
       </Swiper>
-      <ListTitle>Trending Movies</ListTitle>
-      <TrendingScroll 
-        horizontal 
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{paddingLeft: 30}}
-      >
-        {trending.map(movie => (
-          <Movie key={movie.id}>
-            <Poster path={movie.poster_path}/>
-            <Title>
-              {movie.original_title.slice(0,13)}
-              {movie.original_title.length > 13 ? "..." : null}
-            </Title>
-            <Votes>
-              {movie.vote_average > 0 ? (`⭐️ ${Math.trunc(movie.vote_average) } / 10`) : `Coming soon` }
-            </Votes>
-          </Movie>
-        ))}
-      </TrendingScroll>
-    </Container>
+      <ListContainer>
+        <ListTitle>Trending Movies</ListTitle>
+        <TrendingScroll
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{paddingHorizontal: 20}}
+          ItemSeparatorComponent={VSeparator}
+          keyExtractor={movieKeyExtractor}
+          data={trending}
+          renderItem={renderVMedia}
+        />
+      </ListContainer>
+      <ComingSoonTitle>Coming soon</ComingSoonTitle>
+      </>
+      }
+    />
   )
 }
 
-const Container = styled.ScrollView`
+const Container = styled.FlatList`
   background-color: ${props => props.theme.mainBgColor};
-`
+`;
 
 const Loader = styled.View`
   flex: 1;
   justify-content: center;
   align-items: center;
-`
+`;
 
 const ListTitle = styled.Text`
   margin-left: 30px;
   color: white;
   font-size: 16px;
   font-weight:  600;
-`
+`;
 
-const TrendingScroll = styled.ScrollView`
+const TrendingScroll = styled.FlatList`
   margin-top: 20px;
+`;
+
+const ListContainer = styled.View`
+  margin-bottom: 40px;
+`;
+
+const ComingSoonTitle = styled(ListTitle)`
+  margin-bottom: 30px;
 `
 
-const Movie = styled.View`
-  margin-right: 20px;
-  align-items: center;
+const VSeparator = styled.View`
+  width: 20px;
 `
-
-const Title = styled.Text`
-  color: ${props => props.theme.textColor};
-  font-weight: 600;
-  margin-top: 10px;
-  margin-bottom: 5px;
-`;
-const Votes = styled.Text`
-  color: rgba(255,255,255, 0.8);
-  font-size: 10px;
-`;
+const HSeparator = styled.View`
+  width: 20px;
+`
 
 
 export default Movies;
