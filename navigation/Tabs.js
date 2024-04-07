@@ -14,6 +14,7 @@ const Tabs = () => {
   const isDark = useColorScheme() === "dark";
 
   const allNavOptions = {
+    unmountOnBlur: true,
     headerTitleStyle: {color: "orange"},
     tabBarStyle: { backgroundColor: isDark ? "#1e272e" : "white" },
     tabBarActiveTintColor: isDark ? YELLOW_COLOR : BLACK_COLOR,
