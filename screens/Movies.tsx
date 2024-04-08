@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Dimensions, FlatList } from 'react-native';
+import React from 'react';
+import { Dimensions, FlatList } from 'react-native';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Movie, moviesApi } from '../apis/api';
 import Swiper from 'react-native-swiper';
 import styled from 'styled-components/native';
+
+import { Movie, moviesApi } from '../apis/api';
 import Slide from '../components/Slide';
 import VMedia from '../components/VMedia';
 import HMedia from '../components/HMedia';
+import Loader from '../components/Loader';
+import HList from '../components/HList';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -70,10 +73,9 @@ const Movies = () => {
   }
   const loading = upcomingPending || trendingPending || nowPlayingPending;
   const refreshing = isRefetchingNowPlaying || isRefetchingTrending || isRefetchingUpcoming; 
+
   return loading ? (
-    <Loader>
-      <ActivityIndicator/>
-    </Loader>
+    <Loader/>
   ) : (
     <Container
       onRefresh={onRefresh}
@@ -105,18 +107,7 @@ const Movies = () => {
           />
         ))}
       </Swiper>
-      <ListContainer>
-        <ListTitle>Trending Movies</ListTitle>
-        <TrendingScroll
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{paddingHorizontal: 20}}
-          ItemSeparatorComponent={VSeparator}
-          keyExtractor={movieKeyExtractor}
-          data={trendingData}
-          renderItem={renderVMedia}
-        />
-      </ListContainer>
+      <HList title='Trending Movies' data={trendingData}/>
       <ComingSoonTitle>Coming soon</ComingSoonTitle>
       </>
       }
@@ -127,12 +118,6 @@ const Movies = () => {
 const Container = styled.FlatList`
   background-color: ${props => props.theme.mainBgColor};
 `as unknown as typeof FlatList;
-
-const Loader = styled.View`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-`;
 
 const ListTitle = styled.Text`
   margin-left: 30px;

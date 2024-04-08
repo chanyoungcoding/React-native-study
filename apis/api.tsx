@@ -54,3 +54,20 @@ const nowPlaying = async () => {
 }
 
 export const moviesApi = { trending, upcoming, nowPlaying }
+
+const tvTrending = async () => {
+  const response = await axios.get('https://api.themoviedb.org/3/trending/tv/week', options)
+  return response.data.results
+}
+
+const tvAiringToday = async () => {
+  const response = await axios.get('https://api.themoviedb.org/3/tv/airing_today?page=1', options)
+  return response.data.results
+}
+
+const tvTopRated = async () => {
+  const response = await axios.get('https://api.themoviedb.org/3/tv/top_rated?page=1', options)
+  return response.data.results
+}
+
+export const tvApi = {tvTrending, tvAiringToday, tvTopRated}
