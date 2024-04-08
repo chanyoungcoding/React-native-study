@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Dimensions, FlatList } from 'react-native';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Swiper from 'react-native-swiper';
@@ -14,6 +14,8 @@ import HList from '../components/HList';
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 const Movies = () => {
+
+  const [refreshing, setRefreshing] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -69,10 +71,11 @@ const Movies = () => {
   const movieKeyExtractor = (item: Movie) => item.id.toString();
 
   const onRefresh = async () => {
+    setRefreshing(true);
     await queryClient.refetchQueries({ queryKey: ["movies"]})
+    setRefreshing(false);
   }
   const loading = upcomingPending || trendingPending || nowPlayingPending;
-  const refreshing = isRefetchingNowPlaying || isRefetchingTrending || isRefetchingUpcoming; 
 
   return loading ? (
     <Loader/>

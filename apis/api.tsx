@@ -53,7 +53,13 @@ const nowPlaying = async () => {
   return response.data.results
 }
 
-export const moviesApi = { trending, upcoming, nowPlaying }
+const search = async ({queryKey}) => {
+  const [, query] = queryKey;
+  const response = await axios.get(`https://api.themoviedb.org/3/search/movie?include_adult=true&page=1&query=${query}`, options)
+  return response.data.results
+}
+
+export const moviesApi = { trending, upcoming, nowPlaying, search }
 
 const tvTrending = async () => {
   const response = await axios.get('https://api.themoviedb.org/3/trending/tv/week', options)
@@ -70,4 +76,10 @@ const tvTopRated = async () => {
   return response.data.results
 }
 
-export const tvApi = {tvTrending, tvAiringToday, tvTopRated}
+const tvSearch = async ({queryKey}) => {
+  const [, query] = queryKey;
+  const response = await axios.get(`https://api.themoviedb.org/3/search/tv?include_adult=true&page=1&query=${query}`, options)
+  return response.data.results
+}
+
+export const tvApi = {tvTrending, tvAiringToday, tvTopRated, tvSearch}

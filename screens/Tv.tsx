@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient  } from '@tanstack/react-query';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { RefreshControl, ScrollView } from 'react-native';
 import { tvApi } from '../apis/api';
@@ -7,6 +7,8 @@ import Loader from '../components/Loader';
 import HList, { HListSeparator } from '../components/HList';
 
 const Tv = () => {
+
+  const [refreshing, setRefreshing] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -26,11 +28,12 @@ const Tv = () => {
   })
 
   const onRefresh = async () => {
+    setRefreshing(true);
     await queryClient.refetchQueries({ queryKey: ["tv"]})
+    setRefreshing(false);
   }
 
   const loading = trendingPending || ariringTodayPending || topRatedPending;
-  const refreshing = trendingRefetching || ariringTodayRefetching || topRatedRefetching;
   
   return loading ? (<Loader/>) : (
     <ScrollView
