@@ -5,6 +5,7 @@ import { makeImgPath } from '../utils';
 import { StyleSheet, TouchableWithoutFeedback, useColorScheme } from 'react-native';
 import Poster from './Poster';
 import { useNavigation } from '@react-navigation/native';
+import { Movie } from '../apis/api';
 
 interface SlideProps {
   backdropPath: string;
@@ -12,6 +13,7 @@ interface SlideProps {
   originalTitle: string;
   voteAverage: number;
   overview: string;
+  fullData: Movie
 }
 
 const Slide:React.FC<SlideProps> = ({
@@ -20,13 +22,19 @@ const Slide:React.FC<SlideProps> = ({
   originalTitle,
   voteAverage,
   overview,
+  fullData
 }) => {
 
   const isDark = useColorScheme() === "dark";
 
   const navigation = useNavigation();
   const goToDetail = () => {
-    navigation.navigate("Stack", {screen: "Detail"});
+    navigation.navigate("Stack", {
+      screen: "Detail",
+      params: {
+        ...fullData
+      }
+    });
   }
 
   return (

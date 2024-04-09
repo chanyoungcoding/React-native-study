@@ -20,6 +20,19 @@ export interface Movie {
   vote_coint: number;
 }
 
+export interface TV {
+  adult: boolean;
+  backdrop_path: string;
+  id: number;
+  original_language: string;
+  original_name: string;
+  overview: string;
+  poster_path: string;
+  media_type: string;
+  vote_average: number;
+  popularity: number;
+}
+
 interface BaseResponse {
   page: number;
   total_results: number;
@@ -59,7 +72,13 @@ const search = async ({queryKey}) => {
   return response.data.results
 }
 
-export const moviesApi = { trending, upcoming, nowPlaying, search }
+const detail = async ({queryKey}) => {
+  const [, id] = queryKey;
+  const response = await axios.get(`https://api.themoviedb.org/3/movie/${id}?append_to_response=videos,images`, options);
+  return response.data
+}
+
+export const moviesApi = { trending, upcoming, nowPlaying, search, detail }
 
 const tvTrending = async () => {
   const response = await axios.get('https://api.themoviedb.org/3/trending/tv/week', options)
@@ -82,4 +101,10 @@ const tvSearch = async ({queryKey}) => {
   return response.data.results
 }
 
-export const tvApi = {tvTrending, tvAiringToday, tvTopRated, tvSearch}
+const tvDetail = async ({queryKey}) => {
+  const [, id] = queryKey;
+  const response = await axios.get(`https://api.themoviedb.org/3/tv/${id}?append_to_response=videos,images`, options);
+  return response.data
+}
+
+export const tvApi = {tvTrending, tvAiringToday, tvTopRated, tvSearch, tvDetail}

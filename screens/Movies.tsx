@@ -50,14 +50,6 @@ const Movies = () => {
     queryFn: moviesApi.nowPlaying
   })
 
-  const renderVMedia = ({item} : {item: Movie}) => (
-    <VMedia
-      posterPath={item.poster_path}
-      originalTitle={item.original_title}
-      voteAverage={item.vote_average}
-    />
-  )
-
   const renderHMedia = ({item} : {item: Movie}) => (
     <HMedia
       key={item.id}
@@ -65,6 +57,7 @@ const Movies = () => {
       originalTitle={item.original_title}
       overview={item.overview}
       releaseDate={item.release_date}
+      fullData = {item}
     />
   )
 
@@ -107,6 +100,7 @@ const Movies = () => {
             originalTitle={movie.original_title}
             voteAverage={movie.vote_average}
             overview={movie.overview}
+            fullData = {movie}
           />
         ))}
       </Swiper>
