@@ -1,11 +1,10 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect } from 'react'
-import { Dimensions, StyleSheet,Linking } from 'react-native'
+import { Dimensions, StyleSheet,Linking, TouchableOpacity, Share } from 'react-native'
 import styled from 'styled-components/native'
 import { Movie, TV, moviesApi, tvApi } from '../apis/api';
 import Poster from '../components/Poster';
 import { makeImgPath } from '../utils';
-import { LinearGradient } from 'expo-linear-gradient';
 import { BLACK_COLOR } from '../colors';
 import { useQuery } from '@tanstack/react-query';
 import Loader from '../components/Loader';
@@ -31,15 +30,37 @@ const Detail:React.FC<DetailScreenProps> = ({navigation: { setOptions }, route: 
     enabled: "original_title" in params
   })
 
+  const shareMedia = async () => {
+    await Share.share({
+      url: isMovie ? `https://www.imdb.com/title/${data.imdb_id}/` : data.homepage,
+      title: "original_title" in params ? params.original_title : params.original_name
+    })
+  }
+
+  const ShareButton = () => (
+    <TouchableOpacity onPress={shareMedia}>
+      <Ionicons name="share-outline" color="white" size={24} />
+    </TouchableOpacity>
+  )
+
   useEffect(() => {
     setOptions({
-      title: "original_title" in params ? "Movie" : "TV"
+      title: "original_title" in params ? "Movie" : "TV",
+      headerRight: () => <ShareButton/>
     })
   }, [])
 
+  useEffect(() => {
+    if(data) {
+      setOptions({
+        headerRight: () => <ShareButton/>
+      })
+    }
+  }, [data])
+
   const openYTLink = async (videoID: string) => {
     const baseUrl = `http://m.youtube.com/watch?v=${videoID}`;
-    await WebBrowser.openBrowserAsync(baseUrl);
+    await Linking.openURL(baseUrl)
   }
 
   return (
